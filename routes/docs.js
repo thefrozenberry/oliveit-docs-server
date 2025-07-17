@@ -37,7 +37,7 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-// GET /api/docs/sidebar
+// GET /api/docs/sidebar - MUST come before /:id route
 router.get('/sidebar', async (req, res, next) => {
   try {
     const docs = await ApiDoc.find({}, '_id title subtitle api_title').sort({ title: 1, subtitle: 1, api_title: 1 });
@@ -62,7 +62,7 @@ router.get('/sidebar', async (req, res, next) => {
   }
 });
 
-// GET /api/docs/status-codes
+// GET /api/docs/status-codes - MUST come before /:id route
 router.get('/status-codes', (req, res) => {
   res.json([
     { code: 200, label: 'OK', meaning: 'Success', description: 'Standard response for successful requests.' },
@@ -79,17 +79,6 @@ router.get('/status-codes', (req, res) => {
   ]);
 });
 
-// GET /api/docs/:id
-router.get('/:id', async (req, res, next) => {
-  try {
-    const doc = await ApiDoc.findById(req.params.id);
-    if (!doc) return res.status(404).json({ error: 'Not found' });
-    res.json(doc);
-  } catch (err) {
-    next(err);
-  }
-});
-
 // POST /api/docs
 router.post('/', async (req, res, next) => {
   try {
@@ -100,6 +89,17 @@ router.post('/', async (req, res, next) => {
     if (err.name === 'ValidationError') {
       return res.status(400).json({ error: err.message });
     }
+    next(err);
+  }
+});
+
+// GET /api/docs/:id - MUST come after specific routes
+router.get('/:id', async (req, res, next) => {
+  try {
+    const doc = await ApiDoc.findById(req.params.id);
+    if (!doc) return res.status(404).json({ error: 'Not found' });
+    res.json(doc);
+  } catch (err) {
     next(err);
   }
 });
