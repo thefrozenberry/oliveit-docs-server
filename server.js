@@ -15,6 +15,7 @@ const corsOptions = {
     'https://oliveit.club',
     'https://www.oliveit.club',
     'https://popcorn.oliveit.club',
+    'https://docs.oliveit.club',
     'http://localhost:3000',
     'http://localhost:3001'
   ],
