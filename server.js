@@ -9,9 +9,26 @@ const app = express();
 const PORT = process.env.PORT || 6000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://oliveit:docs@cluster0.1fibmaf.mongodb.net/OliveIt?retryWrites=true&w=majority&appName=Cluster0';
 
+// CORS configuration
+const corsOptions = {
+  origin: [
+    'https://oliveit.club',
+    'https://www.oliveit.club',
+    'https://popcorn.oliveit.club',
+    'http://localhost:3000',
+    'http://localhost:3001'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
+
+// Add CORS headers for preflight requests
+app.options('*', cors(corsOptions));
 
 // Routes
 app.use('/api/docs', docsRouter);
